@@ -1,0 +1,12 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    {% for post in posts %}
+        <h1>{{ post.title }}</h1>
+        <h1>{{ post.author }}</h1>
+        <h1>{{ post.published_at }}</h1>
+        <hr>
+        {% empty %}
+        <li>Sorry, no athletes in this list.</li>
+    {% endfor %}
+{% endblock content %}
