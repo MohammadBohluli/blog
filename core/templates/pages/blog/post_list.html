@@ -5,6 +5,9 @@
         <a href="{% url 'blog:post_detail' post.id %}">{{ post.title }}</a>
         <h1>{{ post.author }}</h1>
         <h1>{{ post.published_at }}</h1>
+        {% for category in post.category.all %}
+        <p>{{ category }}</p>
+        {% endfor %}
         <hr>
         {% empty %}
         <li>Sorry, no post</li>

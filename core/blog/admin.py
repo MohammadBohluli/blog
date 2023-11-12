@@ -7,7 +7,13 @@ class PostAdmin(admin.ModelAdmin):
     list_display = [
         "author",
         "title",
+        "get_category"
     ]
+
+    @admin.display(description='category')
+    def get_category(self,obj):
+        res = [category.name for category in obj.category.all()]
+        return ', '.join(res)
 
 
 class CategoryAdmin(admin.ModelAdmin):
