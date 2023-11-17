@@ -1,19 +1,15 @@
-from django.views.generic import TemplateView
+from django.shortcuts import render
 
 
-class HomePageView(TemplateView):
-    template_name = 'pages/home.html'
-
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data()
-        context['title'] = 'Home'
-        return context
+def home_page_view(request):
+    context = {
+        'title': 'Home'
+    }
+    return render(request,'pages/home.html',context)
 
 
-class AboutPageView(TemplateView):
-    template_name = 'pages/about.html'
-
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data()
-        context['title'] = 'About'
-        return context
+def about_page_view(request):
+    context = {
+        'title': 'About'
+    }
+    return render(request,'pages/about.html',context)
