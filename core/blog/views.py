@@ -1,12 +1,26 @@
 from django.shortcuts import render, get_object_or_404
+from django.core.paginator import Paginator, EmptyPage
 from .models import Post
 
 
 def post_list_view(request):
+
+    # querySet
     post_list = Post.objects.all()
 
+    # handeling paginations
+    paginator = Paginator(post_list, 1)
+    page_number = request.GET.get('page', 1)
+
+    # If page_number is out of range deliver last page of results
+    try:
+        post = paginator.page(page_number)
+    except EmptyPage:
+        post = paginator.page(paginator.num_pages)
+
+
     context = {
-        'posts': post_list,
+        'posts': post,
         'title': 'Blogs',
     }
 
