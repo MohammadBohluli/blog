@@ -13,8 +13,14 @@ def post_list_view(request):
     return render(request, 'pages/blog/post_list.html', context)
 
 
-def post_detail_view(request, id):
-    post = get_object_or_404(Post,id=id)
+def post_detail_view(request, year, month, day, post):
+    post = get_object_or_404(
+        Post,
+        status=Post.Status.PUBLISHED,
+        published_at__year=year,
+        published_at__month=month,
+        published_at__day=day,
+        slug=post)
     context = {
         'post': post,
     }

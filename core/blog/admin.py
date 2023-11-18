@@ -5,10 +5,12 @@ from .models import Post, Category
 class PostAdmin(admin.ModelAdmin):
     model = Post
     list_display = [
-        "author",
         "title",
-        "get_category"
+        "author",
+        "get_category",
     ]
+    prepopulated_fields = {"slug": ["title"]}
+    list_display_links = ['title',]
 
     @admin.display(description='category')
     def get_category(self,obj):
