@@ -2,7 +2,7 @@
 
 {% block content %}
     {% for post in posts %}
-        <a href="{% url 'blog:post_detail' post.id %}">{{ post.title }}</a>
+        <a href="{{ post.get_absolute_url }}">{{ post.title }}</a>
         <h1>{{ post.author }}</h1>
         <h1>{{ post.published_at }}</h1>
         <h1>{{ post.content | truncatechars:30 | linebreaks }}</h1>

@@ -2,7 +2,6 @@ from django.db import models
 from accounts.models import CustomUser
 from django.utils import timezone
 
-
 class Post(models.Model):
     class Status(models.TextChoices):
         PUBLISHED = "P", "Publish"
@@ -22,8 +21,14 @@ class Post(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
+
+    def get_absolute_url(self):
+        return self.id
+    
+
     def __str__(self):
         return self.title
+    
 
 
 class Category(models.Model):
