@@ -7,15 +7,14 @@ def post_list_view(request):
 
     context = {
         'posts': post_list,
-        'title': 'Posts',
+        'title': 'Blogs',
     }
 
     return render(request, 'pages/blog/post_list.html', context)
 
 
 def post_detail_view(request, id):
-    # post = get_object_or_404(Post,id=id)
-    post = Post.objects.get(id=id)
+    post = get_object_or_404(Post,id=id)
     context = {
         'post': post,
     }
