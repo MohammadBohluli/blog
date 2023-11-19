@@ -12,14 +12,7 @@ def post_list_view(request):
     paginator = Paginator(post_list, 1)
     page_number = request.GET.get('page', 1)
 
-    try:
-        post = paginator.page(page_number)
-    except PageNotAnInteger:
-        # If page_number is string type deliver first page of results
-        post = paginator.page(1)
-    except EmptyPage:
-        # If page_number is out of range deliver last page of results
-        post = paginator.page(paginator.num_pages)
+    post = paginator.get_page(page_number)
 
 
     context = {
