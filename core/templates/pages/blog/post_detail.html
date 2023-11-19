@@ -7,5 +7,5 @@
     <p>{{ post.content }}</p>
     <p>{{ post.published_at }}</p>
     <p>{{ post.updated_at }}</p>
-        
+    <a href="{% url 'blog:post_share' post.id %}">share</a>
 {% endblock content %}
