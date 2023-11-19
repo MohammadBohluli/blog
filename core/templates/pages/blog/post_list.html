@@ -13,4 +13,7 @@
         {% empty %}
         <li>Sorry, no post</li>
     {% endfor %}
+
+    {% include 'partials/_pagination.html' with page=posts %}
+
 {% endblock content %}
