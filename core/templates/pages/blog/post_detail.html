@@ -1,11 +1,53 @@
 {% extends 'base.html' %}
 
-{% block content %}
 
-    <h3>{{ post.title }}</h3>
-    <p>{{ post.author }}</p>
-    <p>{{ post.content }}</p>
-    <p>{{ post.published_at }}</p>
-    <p>{{ post.updated_at }}</p>
+{% block content %}
+<div class="col-lg-8">
+    <!-- Post content-->
+    <article>
+        <!-- Post header-->
+        <header class="mb-4">
+            <!-- Post title-->
+            <h1 class="fw-bolder mb-1">{{ post.title }}</h1>
+            <!-- Post meta content-->
+            <div class="text-muted fst-italic mb-2">توسط {{ post.author }} در تاریخ {{ post.published_at }} منتشر شده</div>
+            <!-- Post categories-->
+            {% for category in post.category.all %}
+                <a class="badge bg-secondary text-decoration-none link-light" href="#!">{{category.name}}</a>
+            {% endfor %}
+
+        </header>
+        <!-- Preview image figure-->
+        <figure class="mb-4"><img class="img-fluid rounded" src="https://dummyimage.com/900x400/ced4da/6c757d.jpg"
+                alt="..." /></figure>
+        <!-- Post content-->
+        <section class="mb-5">
+            <p class="fs-5 mb-4">{{ post.content }}</p>
+        </section>
+    </article>
     <a href="{% url 'blog:post_share' post.id %}">share</a>
+
+
+
+    <!-- Comments section-->
+    <section class="mb-5">
+        <div class="card bg-light">
+            <div class="card-body">
+                <!-- Comment form-->
+                <form class="mb-4"><textarea class="form-control" rows="3"
+                        placeholder="خوشحال میشم نظر تو در رابطه با این پست بنویسی"></textarea></form>
+                <!-- Single comment-->
+                <div class="d-flex">
+                    <div class="flex-shrink-0"><img class="rounded-circle"
+                            src="https://dummyimage.com/50x50/ced4da/6c757d.jpg" alt="..." /></div>
+                    <div class="ms-3">
+                        <div class="fw-bold">محمد</div>
+                        وقتی به کائنات و همه راه هایی که کیهان می خواهد ما را بکشد نگاه می کنم، به سختی می
+                        توانم آن را با اظهارات خیرخواهانه تطبیق دهم.
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+</div>
 {% endblock content %}
