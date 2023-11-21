@@ -10,7 +10,7 @@ def post_list_view(request):
     post_list = Post.objects.all()
 
     # handeling paginations
-    paginator = Paginator(post_list, 1)
+    paginator = Paginator(post_list, 5)
     page_number = request.GET.get('page', 1)
 
     post = paginator.get_page(page_number)

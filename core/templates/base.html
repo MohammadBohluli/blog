@@ -22,8 +22,11 @@
     {% include 'partials/_navbar.html' %}
 
     <!-- Main Contents -------------------------->
-    {% block content %}
-    {% endblock content %}
+    <div class="container">
+        <div class="row">
+            {% block content %}{% endblock content %}
+        </div>
+    </div>
 
     <!-- Footer --------------------------------->
     {% include 'partials/_footer.html' %}
