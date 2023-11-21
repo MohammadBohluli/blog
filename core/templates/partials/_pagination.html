@@ -1,17 +1,16 @@
+<nav aria-label="Pagination">
 
+    <ul class="pagination justify-content-center my-4">
+        {% if page.has_previous%}
+            <li class="page-item">
+                <a class="page-link" href="?page={{ page.previous_page_number}}">قبلی</a>
+            </li>
+        {% endif %}
 
+        <li class="page-item"><a class="page-link" href="#">صفحه {{ page.number }} از {{ page.paginator.num_pages }}</a></li>
 
-<ul class="pagination">
-
-    {% if page.has_previous%}
-        <li class="page-item"><a class="page-link" href="?page={{ page.previous_page_number}}">Previous</a></li>
-    {% endif %}
-
-        <li class="page-item">Page {{ page.number }} of {{ page.paginator.num_pages }}</li>
-
-    {% if page.has_next %}
-        <li class="page-item"><a class="page-link" href="?page={{ page.next_page_number}}">Next</a></li>
-    {% endif %}
-
-
-</ul>
+        {% if page.has_next %}
+            <li class="page-item"><a class="page-link" href="?page={{ page.next_page_number}}">بعدی</a></li>
+        {% endif %}
+    </ul>
+</nav>
