@@ -19,6 +19,7 @@ services:
     image: postgres:latest
     volumes:
       - postgres_data:/var/lib/postgresql/data/
+    container_name: postgres-db
 
 
 volumes:
