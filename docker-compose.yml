@@ -5,7 +5,9 @@ services:
   backend:
     container_name: "backend"
     build: .
-    command: python3 core/manage.py runserver 0.0.0.0:8000
+    command: > 
+      sh -c 
+        "python3 core/manage.py runserver 0.0.0.0:8000"
     volumes:
       - .:/app
     ports:
@@ -17,9 +19,13 @@ services:
     
   db:
     image: postgres:latest
+    container_name: postgres-db
     volumes:
       - postgres_data:/var/lib/postgresql/data/
-    container_name: postgres-db
+    environment:
+      - POSTGRES_USER=blog_user
+      - POSTGRES_PASSWORD=blog_password
+      - POSTGRES_DB=blog_db
 
 
 volumes:
