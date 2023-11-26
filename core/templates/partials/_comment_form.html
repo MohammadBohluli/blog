@@ -1,0 +1,5 @@
+<form action="{% url 'blog:post_comment' post.id %}" method="post" class="mb-4">
+    {{ form.as_p }}
+    {% csrf_token %}
+    <p><input type="submit" value="ارسال"></p>
+</form>
