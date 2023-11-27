@@ -1,7 +1,7 @@
 <h1 align="center" id="title">Tech with Mohammad Blog</h1>
 
 <p id="description">This project is a personal blog for sharing technology Knowledge with other software engineering</p>
-
+<p>Note : Over time, I will make this project more advanced</p>
 <h2>🛠️ Installation Steps:</h2>
 
 <p>1. First of all</p>
