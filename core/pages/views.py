@@ -1,15 +1,21 @@
-from django.shortcuts import render
+from typing import Any
+from django.views.generic import TemplateView
+
+class HomePageView(TemplateView):
+
+    template_name = 'pages/home.html'
+
+    def get_context_data(self, **kwargs: Any) -> dict[str, Any]:
+        context = super().get_context_data(**kwargs)
+        context['title'] = 'خانه'
+        return context
 
 
-def home_page_view(request):
-    context = {
-        'title': 'Home'
-    }
-    return render(request,'pages/home.html',context)
+class AboutPageView(TemplateView):
 
-
-def about_page_view(request):
-    context = {
-        'title': 'About'
-    }
-    return render(request,'pages/about.html',context)
+    template_name = 'pages/about.html'
+    
+    def get_context_data(self, **kwargs: Any) -> dict[str, Any]:
+        context = super().get_context_data(**kwargs)
+        context['title'] = 'درباره ما'
+        return context
