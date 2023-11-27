@@ -50,3 +50,4 @@ Technologies used in the project(for now 😉):
 *   PgAdmin
 *   Docker
 *   Git
+*   Bootstrap 5
