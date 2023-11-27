@@ -7,7 +7,8 @@ services:
     build: .
     command: > 
       sh -c 
-        "python3 core/manage.py runserver 0.0.0.0:8000"
+        "python3 core/manage.py migrate &&
+         python3 core/manage.py runserver 0.0.0.0:8000"
     volumes:
       - .:/app
     ports:
