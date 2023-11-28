@@ -9,5 +9,4 @@ urlpatterns = [
     # Local
     path("", include("pages.urls", namespace='pages')),
     path("blog/", include("blog.urls", namespace='blog')),
-    path('accounts/', include('accounts.urls')),
 ]
