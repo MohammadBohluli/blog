@@ -1,10 +1,12 @@
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin
 from .models import CustomUser
+from .forms import CustomUserCreationForm
 
 
 class CustomUserAdmin(UserAdmin):
     model = CustomUser
+    add_form = CustomUserCreationForm
     ordering = ("email",)
     list_display = (
         "email",
