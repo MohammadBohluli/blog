@@ -1,10 +1,35 @@
-from django.contrib.auth.views import LoginView, LogoutView
-from .forms import CustomUserCreationForm
+from django.contrib.auth.views import LogoutView
+from .forms import CustomUserCreationForm, LoginForm
 from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate, login
 from django.contrib.auth.decorators import login_required
-class LoginViewPage(LoginView):
-    template_name = 'registration/login_page.html'
+from django.http import HttpResponse
+
+
+#################################
+##### Login Page
+#################################
+def login_view(request):
+
+    if request.method == 'POST':
+        form = LoginForm(request.POST)
+
+        if form.is_valid():
+            cd = form.cleaned_data
+            user = authenticate(request, email=cd['email'], password=cd['password'])
+            if user is not None and user.is_active:
+                login(request, user)
+                return redirect('accounts:profile')
+            else:
+                return HttpResponse("Invalid login or Your account is not active")
+    else:
+        form = LoginForm()
+
+    context = {
+        'form': form
+    }
+
+    return render(request, 'pages/accounts/login.html', context)
 
 class LogoutViewPage(LogoutView):
     template_name = 'registration/logout_page.html'
