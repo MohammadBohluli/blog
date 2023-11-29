@@ -17,19 +17,17 @@ def register_view(request):
     if request.method == "POST":
     
         form = CustomUserCreationForm(request.POST)
-        print('form_register', form)
-
+        
         if form.is_valid():
             form.save()
 
             email = form.cleaned_data.get('email')
             password = form.cleaned_data.get('password1')
             
-
             user = authenticate(email=email, password=password)
             login(request,user)
             
-            return redirect('pages:home_page')
+            return redirect('accounts:profile')
     else:
         form = CustomUserCreationForm()
 

@@ -6,7 +6,7 @@ from .views import (
     profile_view,
 )
 
-app_name = 'account'
+app_name = 'accounts'
 urlpatterns = [
     path('login/', LoginViewPage.as_view(), name='login'),
     path('logout/', LogoutViewPage.as_view(), name='logout'),
