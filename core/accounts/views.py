@@ -1,7 +1,7 @@
 from django.contrib.auth.views import LogoutView
 from .forms import CustomUserCreationForm, LoginForm
 from django.shortcuts import render, redirect
-from django.contrib.auth import authenticate, login
+from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponse
 
@@ -31,8 +31,14 @@ def login_view(request):
 
     return render(request, 'pages/accounts/login.html', context)
 
-class LogoutViewPage(LogoutView):
-    template_name = 'registration/logout_page.html'
+
+#################################
+##### Logout Page
+#################################
+def logout_view(request):
+    logout(request)
+    return render(request, 'pages/accounts/logout.html')
+
 
 #################################
 ##### Register Page
@@ -60,6 +66,7 @@ def register_view(request):
         'form': form
     }
     return render(request, 'registration/register_page.html', context)
+
 
 #################################
 ##### Profile Page
