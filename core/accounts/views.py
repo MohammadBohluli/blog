@@ -10,7 +10,10 @@ from django.http import HttpResponse
 ##### Login Page
 #################################
 def login_view(request):
-
+    
+    if request.user.is_authenticated:
+        return redirect('accounts:profile')
+    
     if request.method == 'POST':
         form = LoginForm(request.POST)
 
