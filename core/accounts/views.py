@@ -103,6 +103,11 @@ def register_view(request):
 def profile_view(request):
     return render(request, 'pages/accounts/profile.html')
 
+#################################
+##### Password Change Page
+#################################
+def password_change_view(request):
+    pass
 
 
 def active_email(request, user, to_email):

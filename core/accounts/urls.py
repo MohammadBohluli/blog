@@ -5,6 +5,7 @@ from .views import (
     profile_view,
     logout_view,
     activate_user_view,
+    password_change_view,
 )
 
 app_name = 'accounts'
@@ -14,4 +15,5 @@ urlpatterns = [
     path('register/', register_view, name='register'),
     path('profile/', profile_view, name='profile'),
     path('activate/<uidb64>/<token>', activate_user_view, name='activate'),
+    path('password_change/', password_change_view, name='password_change'),
 ]
