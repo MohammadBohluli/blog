@@ -1,5 +1,5 @@
-from .forms import CustomUserCreationForm, LoginForm
-from django.contrib.auth import authenticate, login, logout, get_user_model
+from .forms import CustomUserCreationForm, CustomPasswordChangeForm, LoginForm
+from django.contrib.auth import authenticate, login, logout, get_user_model, update_session_auth_hash
 from django.contrib.sites.shortcuts import get_current_site
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
@@ -106,8 +106,27 @@ def profile_view(request):
 #################################
 ##### Password Change Page
 #################################
+@login_required
 def password_change_view(request):
-    pass
+    if request.method == 'POST':
+        form = CustomPasswordChangeForm(request.user, request.POST)
+
+        if form.is_valid():
+            user = form.save()
+            update_session_auth_hash(user)
+            messages.success(request, 'کلمه عبور با موفقیت عوض شد')
+            return redirect('accounts:login')
+        else:
+            messages.error(request, 'لطفا به خطا های زیر توجه کنید')
+        
+    else:
+        form = CustomPasswordChangeForm(request.user)
+
+    context = {
+        'form': form
+    }
+    return render(request, 'pages/accounts/password_change_confirm.html', context)
+
 
 
 def active_email(request, user, to_email):
