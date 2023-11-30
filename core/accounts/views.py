@@ -1,9 +1,35 @@
-from django.contrib.auth.views import LogoutView
 from .forms import CustomUserCreationForm, LoginForm
-from django.shortcuts import render, redirect
-from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth import authenticate, login, logout, get_user_model
+from django.contrib.sites.shortcuts import get_current_site
 from django.contrib.auth.decorators import login_required
+from django.contrib import messages
+from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
+from django.utils.encoding import force_bytes, force_str
 from django.http import HttpResponse
+from django.shortcuts import render, redirect
+from django.template.loader import render_to_string
+from django.core.mail import EmailMessage
+from .tokens import account_activation_token
+
+
+def activate_user_view(request, uidb64, token):
+
+    User = get_user_model()
+    try:
+        user_id = force_str(urlsafe_base64_decode(uidb64))
+        user = User.objects.get(pk=user_id)
+    except:
+        user = None
+
+    if user is not None and account_activation_token.check_token(user, token):
+        user.is_active = True
+        user.save()
+
+        messages.success(request,"ایمیل شما فعال شد . اکنون میتوانید وارد پنل خود شوید")
+        return redirect('accounts:login')
+    else:
+        messages.success(request,"لینک مورد نظر معتبر نیست")
+    return redirect('pages:home_page')
 
 
 #################################
@@ -44,7 +70,7 @@ def logout_view(request):
 
 
 #################################
-##### Register Page
+##### Register Page(with email confirmations)
 #################################
 def register_view(request):
 
@@ -53,15 +79,14 @@ def register_view(request):
         form = CustomUserCreationForm(request.POST)
         
         if form.is_valid():
-            form.save()
+            user = form.save(commit=False)
+            user.is_active = False
+            user.save()
+
 
             email = form.cleaned_data.get('email')
-            password = form.cleaned_data.get('password1')
-            
-            user = authenticate(email=email, password=password)
-            login(request,user)
-            
-            return redirect('accounts:profile')
+            active_email(request, user, to_email=email)
+            return redirect('pages:home_page')
     else:
         form = CustomUserCreationForm()
 
@@ -77,3 +102,24 @@ def register_view(request):
 @login_required
 def profile_view(request):
     return render(request, 'pages/accounts/profile.html')
+
+
+
+def active_email(request, user, to_email):
+    # Email informations
+    subject = "اکانت شما با موفقیت فعال شد"
+    message = render_to_string(
+        template_name='pages/accounts/activate_account_email.html',
+        context= {
+            'user': user.first_name,
+            'domain': get_current_site(request).domain,
+            'user_id':urlsafe_base64_encode(force_bytes(user.pk)),
+            'token': account_activation_token.make_token(user),
+        }
+    )
+    email = EmailMessage(subject=subject, body=message, to=[to_email])
+
+    if email.send():
+        messages.success(request,"کاربر گرامی لطفا ایمیل خود را فعال کنید")
+    else:
+        messages.error(request,"ایمیل ارسال نشد خطایی رخ داده")
