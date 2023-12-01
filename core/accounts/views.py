@@ -167,10 +167,11 @@ def password_reset_view(request):
                     messages.success(request,"لینک کلمه عبور ارسال شد")
                 else:
                     messages.error(request,"ایمیل ارسال نشد خطایی رخ داده")
-            return redirect('pages:home_page')
+            return redirect('pages:home_page') # TODO - got to password_password_reset_done
 
     else:
         form = CustomPasswordResetForm()
+        # TODO show error: کاربری با این ایمیل وجود ندارد
 
 
     context = {
