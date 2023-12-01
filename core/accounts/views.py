@@ -1,5 +1,17 @@
-from .forms import CustomUserCreationForm, CustomPasswordChangeForm, LoginForm
-from django.contrib.auth import authenticate, login, logout, get_user_model, update_session_auth_hash
+from .forms import (
+    CustomUserCreationForm,
+    CustomPasswordChangeForm,
+    CustomPasswordResetForm,
+    CustomSetPasswordForm,
+    LoginForm,
+)
+from django.contrib.auth import (
+    authenticate,
+    login,
+    logout,
+    get_user_model,
+    update_session_auth_hash
+)
 from django.contrib.sites.shortcuts import get_current_site
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
@@ -113,7 +125,7 @@ def password_change_view(request):
 
         if form.is_valid():
             user = form.save()
-            update_session_auth_hash(user)
+            update_session_auth_hash(request,user)
             messages.success(request, 'کلمه عبور با موفقیت عوض شد')
             return redirect('accounts:login')
         else:
@@ -126,6 +138,81 @@ def password_change_view(request):
         'form': form
     }
     return render(request, 'pages/accounts/password_change_confirm.html', context)
+
+
+#################################
+##### Password Reset Page
+#################################
+def password_reset_view(request):
+    
+    if request.method == 'POST':
+        form = CustomPasswordResetForm(request.POST)
+        
+        if form.is_valid():
+            email = form.cleaned_data['email']
+            user = get_user_model().objects.filter(email=email).first()
+
+            if user is not None:
+                subject = 'درخواست باز نشانی کلمه عبور'
+                message = render_to_string(
+                template_name='pages/accounts/template_reset_password_email.html',
+                context= {
+                    'user': user.first_name,
+                    'domain': get_current_site(request).domain,
+                    'user_id':urlsafe_base64_encode(force_bytes(user.pk)),
+                    'token': account_activation_token.make_token(user),
+                }) 
+                email = EmailMessage(subject=subject, body=message, to=[user.email])
+                if email.send():
+                    messages.success(request,"لینک کلمه عبور ارسال شد")
+                else:
+                    messages.error(request,"ایمیل ارسال نشد خطایی رخ داده")
+            return redirect('pages:home_page')
+
+    else:
+        form = CustomPasswordResetForm()
+
+
+    context = {
+        'form': form
+    }
+
+    return render(request, 'pages/accounts/password_reset.html', context)
+
+
+def password_reset_confirm_view(request, uidb64, token):
+    User = get_user_model()
+
+    try:
+        user_id = force_str(urlsafe_base64_decode(uidb64))
+        user = User.objects.get(pk=user_id)
+    except:
+        user = None
+
+
+    if user is not None and account_activation_token.check_token(user, token):
+        if request.method == 'POST':
+            form = CustomSetPasswordForm(user, request.POST)
+            if form.is_valid():
+                form.save()
+                messages.success(request,"کلمه عبور شما عوض شد")
+                return redirect('accounts:login')
+            else:
+                messages.error(request,"خطایی رخ داده")
+        else:
+            form = CustomSetPasswordForm(user)
+        return render(request, 'pages/accounts/password_reset_form.html', {'form': form})   
+    else:
+        messages.error(request,"لینک اکسپایر شده")
+
+        
+    return redirect('pages:home_page')
+
+
+
+
+
+
 
 
 
