@@ -15,8 +15,8 @@ class CustomUserCreationForm(UserCreationForm):
 
 
 class LoginForm(forms.Form):
-    email = forms.EmailField()
-    password = forms.CharField(widget=forms.PasswordInput)
+    email = forms.EmailField(label='ایمیل')
+    password = forms.CharField(widget=forms.PasswordInput, label='کلمه عبور')
 
 
 class CustomPasswordChangeForm(PasswordChangeForm):
