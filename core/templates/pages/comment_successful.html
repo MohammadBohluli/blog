@@ -6,10 +6,16 @@
 {% block content %}
 
     {% if comment %}
-        <h2>Your comment has been added.</h2>
+
+        <!-- show Message --------------------------------------------->
+        {% include 'partials/_messages.html' %}
+        
         <p><a href="{{ post.get_absolute_url }}">برگشت به پست</a></p>
+
     {% else %}
+
         {% include "partials/_comment_form.html" %}
+        
     {% endif %}
 
 {% endblock %}

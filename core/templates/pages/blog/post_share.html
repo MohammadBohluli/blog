@@ -7,10 +7,9 @@
 
     {% if is_sent %}
 
-        <h1>E-mail successfully sent</h1>
-        <p>
-        "{{ post.title }}" was successfully sent to {{ form.cleaned_data.to }}.
-        </p>
+        <!-- show Message --------------------------------------------->
+        {% include 'partials/_messages.html' %}
+        <a href="{{ post.get_absolute_url }}">بازگشت</a>
 
     {% else %}
 

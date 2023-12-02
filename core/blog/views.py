@@ -1,12 +1,10 @@
-from django.shortcuts import render, get_object_or_404
+from django.shortcuts import render, get_object_or_404, redirect
 from django.core.paginator import Paginator
 from .models import Post
 from .forms import EmailPostForm, CommentForm
 from django.core.mail import send_mail
 from django.views.decorators.http import require_POST
-
-
-
+from django.contrib import messages
 
 
 def post_list_view(request):
@@ -23,7 +21,6 @@ def post_list_view(request):
 
     context = {
         'posts': post,
-        'title': 'Blogs',
     }
 
     return render(request, 'pages/blog/post_list.html', context)
@@ -65,6 +62,7 @@ def post_share_view(request, post_id):
 
             send_mail(subject, message, 'your_account@gmail.com',[cd['to']])
             is_sent = True
+            messages.success(request, "ایمیل شما با موفقیت ارسال گردید")
     else:
         form = EmailPostForm()
 
@@ -86,6 +84,11 @@ def post_comment(request, post_id):
         comment = form.save(commit=False)
         comment.post = post
         comment.save()
+        messages.success(request, 'نظر شما با موفقیت ارسال شد')
+    else:
+        messages.error(request, 'نظر شما ارسال نشد')
+        return redirect('blog:post_comment')
+        
     
     context = {
         'post': post,
