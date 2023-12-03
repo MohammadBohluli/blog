@@ -1,23 +1,15 @@
 from django.urls import path
-from .views import (
-    login_view,
-    profile_view,
-    logout_view,
-    signup_view,
-    activate_user_view,
-    password_change_view,
-    password_reset_view,
-    password_reset_confirm_view,
-)
+from . import views
+
 
 app_name = 'accounts'
 urlpatterns = [
-    path('login/', login_view, name='login'),
-    path('logout/', logout_view, name='logout'),
-    path('signup/', signup_view, name='signup'),
-    path('', profile_view, name='profile'),
-    path('activate/<uidb64>/<token>/', activate_user_view, name='activate'),
-    path('password_change/', password_change_view, name='password_change'),
-    path('password_reset/', password_reset_view, name='password_reset'),
-    path('reset/<uidb64>/<token>/', password_reset_confirm_view, name='password_reset_confirm'),
+    path('', views.profile_view, name='profile'),
+    path('login/', views.login_view, name='login'),
+    path('logout/', views.logout_view, name='logout'),
+    path('signup/', views.signup_view, name='signup'),
+    path('activate/<uidb64>/<token>/', views.activate_user_view, name='activate'),
+    path('password_change/', views.password_change_view, name='password_change'),
+    path('password_reset/', views.password_reset_view, name='password_reset'),
+    path('reset/<uidb64>/<token>/', views.password_reset_confirm_view, name='password_reset_confirm'),
 ]
