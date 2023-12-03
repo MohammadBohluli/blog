@@ -221,6 +221,12 @@ def profile_view(request):
     return render(request, 'pages/accounts/profile.html')
 
 
+#################################
+##### Create Post Page
+#################################
+def create_post_view(request):
+    pass
+
 
 def send_active_email(request, user, to_email):
     # Email informations

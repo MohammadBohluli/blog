@@ -1,0 +1,13 @@
+{% extends 'base.html' %}
+
+<!-- Title ------------------->
+{% block title %} ایجاد مقاله {% endblock title %}
+
+{% block content %}
+
+    <form action="" method="post">
+        {% csrf_token %}
+        {{form.as_p}}
+        <input type="submit" value="ذخیره">
+    </form>
+{% endblock %}
