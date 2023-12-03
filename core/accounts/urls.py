@@ -5,6 +5,11 @@ from . import views
 app_name = 'accounts'
 urlpatterns = [
     path('', views.profile_view, name='profile'),
+    
+    # CRUD Posts
+    path('create_post', views.create_post_view, name='create_post'),
+
+    # Authentications
     path('login/', views.login_view, name='login'),
     path('logout/', views.logout_view, name='logout'),
     path('signup/', views.signup_view, name='signup'),
