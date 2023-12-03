@@ -41,4 +41,4 @@ class CustomSetPasswordForm(SetPasswordForm):
 class CreatePostForm(forms.ModelForm):
     class Meta:
         model = Post
-        exclude = ["author",]
+        exclude = ['author']

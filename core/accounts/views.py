@@ -4,6 +4,7 @@ from .forms import (
     CustomPasswordResetForm,
     CustomSetPasswordForm,
     LoginForm,
+    CreatePostForm,
 )
 from django.contrib.auth import (
     authenticate,
@@ -21,7 +22,7 @@ from django.shortcuts import render, redirect
 from django.template.loader import render_to_string
 from django.core.mail import EmailMessage
 from .tokens import account_activation_token
-
+from pprint import pprint
 
 
 #################################
@@ -224,8 +225,25 @@ def profile_view(request):
 #################################
 ##### Create Post Page
 #################################
+@login_required
 def create_post_view(request):
-    pass
+    if request.method == "POST":
+        
+        form = CreatePostForm(request.POST)
+        if form.is_valid():
+            post = form.save(commit=False)
+            post.author = request.user
+            form.save()
+            return redirect("blog:post_list")
+            
+    else:
+        form = CreatePostForm()
+    
+    context = {
+        'form': form
+    }
+
+    return render(request, 'pages/accounts/create_post.html', context)
 
 
 def send_active_email(request, user, to_email):

@@ -5,6 +5,7 @@
 
 {% block content %}
 
+    <p>{{request.user}}</p>
     <form action="" method="post">
         {% csrf_token %}
         {{form.as_p}}
