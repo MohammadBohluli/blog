@@ -5,6 +5,7 @@ from django.contrib.auth.forms import (
     SetPasswordForm
 )
 from django.contrib.auth import get_user_model
+from blog.models import Post
 from django import forms
 
 
@@ -35,3 +36,9 @@ class CustomSetPasswordForm(SetPasswordForm):
     class Meta:
         model = get_user_model()
         fields = ['new_password1', 'new_password1']
+
+
+class CreatePostForm(forms.ModelForm):
+    class Meta:
+        model = Post
+        exclude = ["author",]
