@@ -219,7 +219,11 @@ def password_reset_confirm_view(request, uidb64, token):
 #################################
 @login_required
 def profile_view(request):
-    return render(request, 'pages/accounts/profile.html')
+    # This query will show any user articles that are specific to the user
+    # request.user.id Refers to the logged in user
+    posts = Post.objects.filter(author__id=request.user.id)
+
+    return render(request, 'pages/accounts/profile.html', {'posts': posts})
 
 
 #################################
