@@ -13,7 +13,7 @@
     {% for post in posts %}
 
     <div class="p-3 mb-2 bg-secondary text-white">
-        <p>{{post.title}}</p>
+        <p><a href="{{ post.get_absolute_url }}">{{post.title}}</a></p>
         <a href="">حذف</a>
         <a href="{% url 'accounts:edit_post' post.id %}">ویرایش</a>
     </div>
