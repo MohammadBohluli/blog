@@ -256,6 +256,11 @@ def create_post_view(request):
 @login_required
 def edit_post_view(request, post_id):
     post = get_object_or_404(Post, id=post_id)
+
+    if post.author.id != request.user.id:
+        messages.error(request, 'شما صاحب مقاله نیستید')
+        return redirect('accounts:profile')
+    
     if request.method == 'POST':
         form = CreatePostForm(request.POST, instance=post)
         if form.is_valid():
