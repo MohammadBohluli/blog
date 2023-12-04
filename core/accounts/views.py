@@ -260,6 +260,8 @@ def edit_post_view(request, post_id):
         form = CreatePostForm(request.POST, instance=post)
         if form.is_valid():
             form.save()
+            messages.success(request, 'مقاله شما با موفقیت بروزرسانی شد')
+            return redirect('accounts:profile')
     else:
         form = CreatePostForm(instance=post)
     context = {
