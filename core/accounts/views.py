@@ -219,7 +219,7 @@ def password_reset_confirm_view(request, uidb64, token):
 #################################
 @login_required
 def profile_view(request):
-    # This query will show any user articles that are specific to the user
+    # This query will show any user articles that are specific to the self user
     # request.user.id Refers to the logged in user
     posts = Post.objects.filter(author__id=request.user.id)
 
@@ -269,6 +269,25 @@ def edit_post_view(request, post_id):
     }
 
     return render(request, 'pages/accounts/create_update_post.html', context)
+
+
+#################################
+##### ِDelete Post Page
+#################################
+@login_required
+def delete_post_view(request, post_id):
+    post = get_object_or_404(Post, id=post_id)
+
+    if post.author.id != request.user.id:
+        messages.error(request, 'شما صاحب مقاله نیستید')
+        return redirect('accounts:profile')
+    
+    if request.method == "POST":
+        post.delete()
+        messages.success(request, 'مقاله مورد نظر با موفقیت حذف شد')
+        return redirect('accounts:profile')
+
+    return render(request, 'pages/accounts/delete_post.html')
 
 
 def send_active_email(request, user, to_email):

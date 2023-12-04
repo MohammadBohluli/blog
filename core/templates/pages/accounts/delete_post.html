@@ -1,0 +1,11 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<p>آیا از حذف این مقاله مطمعن هستید ؟</p>
+<form method="post">
+    {% csrf_token %}
+    <button type="submit"><a href="{% url 'accounts:profile' %}">خیر</a></button>
+    <button type="submit">بله</button>
+</form>
+{% endblock %}
