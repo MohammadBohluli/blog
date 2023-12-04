@@ -5,6 +5,9 @@
 
 {% block content %}
 
+    <!-- show Message --------------------------------------------->
+    {% include 'partials/_messages.html' %}
+
     <a href="{% url 'accounts:create_post' %}">ایجاد مقاله</a>
         
     {% for post in posts %}

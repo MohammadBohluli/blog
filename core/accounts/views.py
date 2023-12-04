@@ -238,7 +238,8 @@ def create_post_view(request):
             post = form.save(commit=False)
             post.author = request.user
             form.save()
-            return redirect("blog:post_list")
+            messages.success(request, 'مقاله شما با موفقیت ثبت گردید')
+            return redirect("accounts:profile")
             
     else:
         form = CreatePostForm()

@@ -4,7 +4,9 @@
 {% block title %} ایجاد مقاله {% endblock title %}
 
 {% block content %}
-
+    <!-- show Message --------------------------------------------->
+    {% include 'partials/_messages.html' %}
+    
     <p>{{request.user}}</p>
     <form action="" method="post">
         {% csrf_token %}
