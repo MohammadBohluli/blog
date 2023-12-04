@@ -7,6 +7,14 @@
 
     <a href="{% url 'accounts:create_post' %}">ایجاد مقاله</a>
     
-    <p>پنل کاربری</p>
+    <h1 class="mb-5 mt-5">مقالاتی که شما منتشر کرده اید :</h1>
+    
+    {% if post.author.id == user.id %}
+        <div class="p-3 mb-2 bg-secondary text-white">
+            <p>title</p>
+            <a href="">حذف</a>
+            <a href="">ویرایش</a>
+        </div>
+    {% endif %}
 
 {% endblock %}

@@ -18,11 +18,11 @@ from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
 from django.utils.encoding import force_bytes, force_str
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.template.loader import render_to_string
 from django.core.mail import EmailMessage
 from .tokens import account_activation_token
-from pprint import pprint
+from blog.models import Post
 
 
 #################################
@@ -243,7 +243,25 @@ def create_post_view(request):
         'form': form
     }
 
-    return render(request, 'pages/accounts/create_post.html', context)
+    return render(request, 'pages/accounts/create_update_post.html', context)
+
+#################################
+##### Edit Post Page
+#################################
+@login_required
+def edit_post_view(request, post_id):
+    post = get_object_or_404(Post, id=post_id)
+    if request.method == 'POST':
+        form = CreatePostForm(request.POST, instance=post)
+        if form.is_valid():
+            form.save()
+    else:
+        form = CreatePostForm(instance=post)
+    context = {
+        'form': form
+    }
+
+    return render(request, 'pages/accounts/create_update_post.html', context)
 
 
 def send_active_email(request, user, to_email):
