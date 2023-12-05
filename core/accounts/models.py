@@ -26,6 +26,10 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
     def get_short_name(self):
         return self.first_name.strip().replace(" ","")
     
+    def clean(self) -> None:
+        super().clean()
+        self.email = self.__class__.objects.normalize_email(self.email)
+    
     class Meta:
         verbose_name = "کاربر"
         verbose_name_plural = "کاربران"
