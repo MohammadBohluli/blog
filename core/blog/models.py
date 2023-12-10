@@ -12,7 +12,7 @@ class Post(models.Model):
 
     author = models.ForeignKey(CustomUser, on_delete=models.CASCADE, verbose_name='نویسنده')
     title = models.CharField(max_length=255, blank=False, verbose_name='تیتر')
-    slug = models.SlugField(max_length=255, unique_for_date='published_at', verbose_name='اسلاگ')
+    slug = models.SlugField(max_length=255, unique_for_date='published_at', verbose_name='اسلاگ', allow_unicode=True)
     category = models.ManyToManyField("Category", verbose_name='دسته بندی')
     content = models.TextField(verbose_name='محتوا')
     status = models.CharField(
