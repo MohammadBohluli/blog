@@ -1,10 +1,11 @@
-from django.urls import path
+from django.urls import path, re_path
 from . import views
 
 app_name = "blog"
 urlpatterns = [
     path("", views.post_list_view, name="post_list"),
-    path('<int:year>/<int:month>/<int:day>/<slug:post>/', views.post_detail_view, name='post_detail'),
-    path('<int:post_id>/share/', views.post_share_view, name='post_share'),
-    path('<int:post_id>/comment/', views.post_comment, name='post_comment'),
+    
+    re_path(r"post/(?P<post>[-\w]+)/$", views.post_detail_view, name='post_detail'),
+    path('post/<int:post_id>/share/', views.post_share_view, name='post_share'),
+    path('post/<int:post_id>/comment/', views.post_comment, name='post_comment'),
 ]
