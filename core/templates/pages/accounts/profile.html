@@ -1,0 +1,14 @@
+{% extends "./base_panel.html" %}
+
+
+{% block main %}
+
+    <!-- show Message --------------------------------------------->
+    {% include 'partials/_messages.html' %}
+    
+<form method="post">
+    {% csrf_token %}
+    {{form.as_p}}
+    <button type="submit">اعمال تغییرات</button>
+</form>
+{% endblock main %}

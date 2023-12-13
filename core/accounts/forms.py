@@ -2,7 +2,7 @@ from django.contrib.auth.forms import (
     UserCreationForm,
     PasswordChangeForm,
     PasswordResetForm,
-    SetPasswordForm
+    SetPasswordForm,
 )
 from django.contrib.auth import get_user_model
 from blog.models import Post
@@ -12,12 +12,16 @@ from django import forms
 class CustomUserCreationForm(UserCreationForm):
     class Meta:
         model = get_user_model()
-        fields = ("email","first_name","last_name",)
+        fields = (
+            "email",
+            "first_name",
+            "last_name",
+        )
 
 
 class LoginForm(forms.Form):
-    email = forms.EmailField(label='ایمیل')
-    password = forms.CharField(widget=forms.PasswordInput, label='کلمه عبور')
+    email = forms.EmailField(label="ایمیل")
+    password = forms.CharField(widget=forms.PasswordInput, label="کلمه عبور")
 
 
 class CustomPasswordChangeForm(PasswordChangeForm):
@@ -29,16 +33,30 @@ class CustomPasswordChangeForm(PasswordChangeForm):
 class CustomPasswordResetForm(PasswordResetForm):
     class Meta:
         model = get_user_model()
-        fields = ['email']
+        fields = ["email"]
 
 
 class CustomSetPasswordForm(SetPasswordForm):
     class Meta:
         model = get_user_model()
-        fields = ['new_password1', 'new_password1']
+        fields = ["new_password1", "new_password1"]
 
 
 class CreatePostForm(forms.ModelForm):
     class Meta:
         model = Post
-        exclude = ['author', 'slug', 'published_at']
+        exclude = ["author", "slug", "published_at"]
+
+
+class ProfileUserForm(forms.ModelForm):
+    class Meta:
+        model = get_user_model()
+        fields = [
+            "first_name",
+            "last_name",
+            "email",
+            "is_staff",
+            "is_active",
+            "is_superuser",
+            "last_login",
+        ]

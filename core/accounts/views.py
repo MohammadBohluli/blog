@@ -7,6 +7,7 @@ from .forms import (
     CustomSetPasswordForm,
     LoginForm,
     CreatePostForm,
+    ProfileUserForm,
 )
 from django.contrib.auth import (
     authenticate,
@@ -15,7 +16,7 @@ from django.contrib.auth import (
     get_user_model,
     update_session_auth_hash,
 )
-from django.views.generic import ListView
+from django.views.generic import ListView, UpdateView, FormView
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.sites.shortcuts import get_current_site
 from django.contrib.auth.decorators import login_required
@@ -211,9 +212,9 @@ def password_reset_confirm_view(request, uidb64, token):
 
 
 #################################
-##### Profile Page
+##### Home Panel Page.
 #################################
-class ProfileView(LoginRequiredMixin, ListView):
+class PostList(LoginRequiredMixin, ListView):
     """
     This view displays the articles of each user only to self user
     but superuser can see all article
@@ -228,6 +229,16 @@ class ProfileView(LoginRequiredMixin, ListView):
             return Post.objects.all()
         else:
             return Post.objects.filter(author__id=self.request.user.id)
+
+
+#################################
+##### Profile Page
+#################################
+class ProfileView(LoginRequiredMixin, UpdateView):
+    model = get_user_model()
+    template_name = "pages/accounts/profile.html"
+    pk_url_kwarg = "user_id"
+    form_class = ProfileUserForm
 
 
 #################################
