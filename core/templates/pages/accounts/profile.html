@@ -1,16 +1,16 @@
-{% extends './base_profile.html' %}
+{% extends 'base.html' %}
 
 <!-- Title ------------------->
-<!-- {% block title %} پروفایل {% endblock title %} -->
+{% block title %} پروفایل {% endblock title %} -->
 
-<!-- {% block content %} -->
+{% block content %}
 
     <!-- show Message --------------------------------------------->
-    <!-- {% include 'partials/_messages.html' %}
+    {% include 'partials/_messages.html' %}
 
     <a href="{% url 'accounts:create_post' %}">ایجاد مقاله</a>
         
-    {% for post in posts %}
+    {% for post in post_list %}
 
     <div class="p-3 mb-2 bg-secondary text-white text-body">
         <p><a  class="text-white" href="{{ post.get_absolute_url }}">{{post.title}}</a></p>
@@ -20,6 +20,6 @@
 
     {% empty %}
     <h3>در حال حاضر شما مقاله ای منتشر نکرده اید</h3>
-    {% endfor %} -->
+    {% endfor %}
 
-<!-- {% endblock %} -->
+{% endblock %}

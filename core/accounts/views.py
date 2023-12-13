@@ -1,3 +1,5 @@
+from typing import Any
+from django.db.models.query import QuerySet
 from .forms import (
     CustomUserCreationForm,
     CustomPasswordChangeForm,
@@ -11,8 +13,10 @@ from django.contrib.auth import (
     login,
     logout,
     get_user_model,
-    update_session_auth_hash
+    update_session_auth_hash,
 )
+from django.views.generic import ListView
+from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.sites.shortcuts import get_current_site
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
@@ -29,32 +33,29 @@ from blog.models import Post
 ##### Login Page
 #################################
 def login_view(request):
-    
     # If the user was logged in and we clicked on login again, don't display the login
     if request.user.is_authenticated:
-        return redirect('accounts:profile')
-    
-    if request.method == 'POST':
+        return redirect("accounts:profile")
+
+    if request.method == "POST":
         form = LoginForm(request.POST)
 
         if form.is_valid():
             cd = form.cleaned_data
-            user = authenticate(request, email=cd['email'], password=cd['password'])
+            user = authenticate(request, email=cd["email"], password=cd["password"])
             print(user)
             if user is not None and user.is_active:
                 login(request, user)
-                return redirect('accounts:profile')
+                return redirect("accounts:profile")
             else:
-                messages.error(request,"نام کاربری یا رمز عبور اشتباه است")
+                messages.error(request, "نام کاربری یا رمز عبور اشتباه است")
 
     else:
         form = LoginForm()
 
-    context = {
-        'form': form
-    }
+    context = {"form": form}
 
-    return render(request, 'pages/accounts/login.html', context)
+    return render(request, "pages/accounts/login.html", context)
 
 
 #################################
@@ -62,15 +63,14 @@ def login_view(request):
 #################################
 def logout_view(request):
     logout(request)
-    messages.success(request,"شما با موفقیت از اکانت خود خارج شدید")
-    return redirect('accounts:login')
+    messages.success(request, "شما با موفقیت از اکانت خود خارج شدید")
+    return redirect("accounts:login")
 
 
 #################################
 ##### Activate User Page
 #################################
 def activate_user_view(request, uidb64, token):
-
     User = get_user_model()
     try:
         user_id = force_str(urlsafe_base64_decode(uidb64))
@@ -82,38 +82,35 @@ def activate_user_view(request, uidb64, token):
         user.is_active = True
         user.save()
 
-        messages.success(request,"ایمیل شما فعال شد . اکنون میتوانید وارد پنل خود شوید")
-        return redirect('accounts:login')
+        messages.success(
+            request, "ایمیل شما فعال شد . اکنون میتوانید وارد پنل خود شوید"
+        )
+        return redirect("accounts:login")
     else:
-        messages.error(request,"لینک مورد نظر معتبر نیست")
-    return redirect('accounts:login')
+        messages.error(request, "لینک مورد نظر معتبر نیست")
+    return redirect("accounts:login")
 
 
 #################################
 ##### SignUp Page(with email confirmations)
 #################################
 def signup_view(request):
-
     if request.method == "POST":
-    
         form = CustomUserCreationForm(request.POST)
-        
+
         if form.is_valid():
             user = form.save(commit=False)
             user.is_active = False
             user.save()
 
-
-            email = form.cleaned_data.get('email')
+            email = form.cleaned_data.get("email")
             send_active_email(request, user, to_email=email)
-            return redirect('accounts:login')
+            return redirect("accounts:login")
     else:
         form = CustomUserCreationForm()
 
-    context = {
-        'form': form
-    }
-    return render(request, 'pages/accounts/signup.html', context)
+    context = {"form": form}
+    return render(request, "pages/accounts/signup.html", context)
 
 
 #################################
@@ -121,67 +118,66 @@ def signup_view(request):
 #################################
 @login_required
 def password_change_view(request):
-    if request.method == 'POST':
+    if request.method == "POST":
         form = CustomPasswordChangeForm(request.user, request.POST)
 
         if form.is_valid():
             user = form.save()
-            update_session_auth_hash(request,user)
-            messages.success(request, 'کلمه عبور با موفقیت عوض شد')
-            return redirect('accounts:logout')
-        
+            update_session_auth_hash(request, user)
+            messages.success(request, "کلمه عبور با موفقیت عوض شد")
+            return redirect("accounts:logout")
+
     else:
         form = CustomPasswordChangeForm(request.user)
 
-    context = {
-        'form': form
-    }
-    return render(request, 'pages/accounts/password_change_confirm.html', context)
+    context = {"form": form}
+    return render(request, "pages/accounts/password_change_confirm.html", context)
 
 
 #################################
 ##### Password Reset Page
 #################################
 def password_reset_view(request):
-    
-    if request.method == 'POST':
+    if request.method == "POST":
         form = CustomPasswordResetForm(request.POST)
-        
+
         if form.is_valid():
-            email = form.cleaned_data['email']
+            email = form.cleaned_data["email"]
             user = get_user_model().objects.filter(email=email).first()
 
             # check if user exist in db
             if user is not None:
                 # information email sent
-                subject = 'درخواست باز نشانی کلمه عبور'
+                subject = "درخواست باز نشانی کلمه عبور"
                 message = render_to_string(
-                template_name='pages/accounts/template_reset_password_email.html',
-                context= {
-                    'user': user.first_name,
-                    'domain': get_current_site(request).domain,
-                    'user_id':urlsafe_base64_encode(force_bytes(user.pk)),
-                    'token': account_activation_token.make_token(user),
-                }) 
+                    template_name="pages/accounts/template_reset_password_email.html",
+                    context={
+                        "user": user.first_name,
+                        "domain": get_current_site(request).domain,
+                        "user_id": urlsafe_base64_encode(force_bytes(user.pk)),
+                        "token": account_activation_token.make_token(user),
+                    },
+                )
 
                 email = EmailMessage(subject=subject, body=message, to=[user.email])
 
                 if email.send():
-                    messages.success(request,"لینک تعویض کلمه عبور به ایمیل شما ارسال شد")
+                    messages.success(
+                        request, "لینک تعویض کلمه عبور به ایمیل شما ارسال شد"
+                    )
                 else:
-                    messages.error(request,"ایمیل ارسال نشد خطایی رخ داده")
+                    messages.error(request, "ایمیل ارسال نشد خطایی رخ داده")
 
-                return redirect('accounts:password_reset')
+                return redirect("accounts:password_reset")
             else:
-                messages.error(request,"کاربری با این ایمیل وجود ندارد")
+                messages.error(request, "کاربری با این ایمیل وجود ندارد")
     else:
         form = CustomPasswordResetForm()
-        
-    context = {
-        'form': form
-    }
 
-    return render(request, 'pages/accounts/password_reset.html', context)
+    context = {"form": form}
+
+    return render(request, "pages/accounts/password_reset.html", context)
+
 
 #################################
 ##### Password Reset Confirm Page
@@ -196,34 +192,42 @@ def password_reset_confirm_view(request, uidb64, token):
     except:
         user = None
 
-
     if user is not None and account_activation_token.check_token(user, token):
-        if request.method == 'POST':
+        if request.method == "POST":
             form = CustomSetPasswordForm(user, request.POST)
             if form.is_valid():
                 form.save()
-                messages.success(request,"کلمه عبور شما عوض شد")
-                return redirect('accounts:login')
+                messages.success(request, "کلمه عبور شما عوض شد")
+                return redirect("accounts:login")
         else:
             form = CustomSetPasswordForm(user)
-        return render(request, 'pages/accounts/password_reset_confirm.html', {'form': form})   
+        return render(
+            request, "pages/accounts/password_reset_confirm.html", {"form": form}
+        )
     else:
-        messages.error(request,"لینک اکسپایر شده")
+        messages.error(request, "لینک اکسپایر شده")
 
-        
-    return redirect('pages:home_page')
+    return redirect("pages:home_page")
 
 
 #################################
 ##### Profile Page
 #################################
-@login_required
-def profile_view(request):
-    # This query will show any user articles that are specific to the self user
-    # request.user.id Refers to the logged in user
-    posts = Post.objects.filter(author__id=request.user.id)
+class ProfileView(LoginRequiredMixin, ListView):
+    """
+    This view displays the articles of each user only to self user
+    but superuser can see all article
+    """
 
-    return render(request, 'pages/accounts/profile.html', {'posts': posts})
+    model = Post
+    template_name = "pages/accounts/profile.html"
+    context_object_name = "post_list"
+
+    def get_queryset(self) -> QuerySet[Any]:
+        if self.request.user.is_superuser:
+            return Post.objects.all()
+        else:
+            return Post.objects.filter(author__id=self.request.user.id)
 
 
 #################################
@@ -232,23 +236,21 @@ def profile_view(request):
 @login_required
 def create_post_view(request):
     if request.method == "POST":
-        
         form = CreatePostForm(request.POST)
         if form.is_valid():
             post = form.save(commit=False)
             post.author = request.user
             form.save()
-            messages.success(request, 'مقاله شما با موفقیت ثبت گردید')
+            messages.success(request, "مقاله شما با موفقیت ثبت گردید")
             return redirect("accounts:profile")
-            
+
     else:
         form = CreatePostForm()
-    
-    context = {
-        'form': form
-    }
 
-    return render(request, 'pages/accounts/create_update_post.html', context)
+    context = {"form": form}
+
+    return render(request, "pages/accounts/create_update_post.html", context)
+
 
 #################################
 ##### Edit Post Page
@@ -258,22 +260,20 @@ def edit_post_view(request, post_id):
     post = get_object_or_404(Post, id=post_id)
 
     if post.author.id != request.user.id:
-        messages.error(request, 'شما صاحب مقاله نیستید')
-        return redirect('accounts:profile')
-    
-    if request.method == 'POST':
+        messages.error(request, "شما صاحب مقاله نیستید")
+        return redirect("accounts:profile")
+
+    if request.method == "POST":
         form = CreatePostForm(request.POST, instance=post)
         if form.is_valid():
             form.save()
-            messages.success(request, 'مقاله شما با موفقیت بروزرسانی شد')
-            return redirect('accounts:profile')
+            messages.success(request, "مقاله شما با موفقیت بروزرسانی شد")
+            return redirect("accounts:profile")
     else:
         form = CreatePostForm(instance=post)
-    context = {
-        'form': form
-    }
+    context = {"form": form}
 
-    return render(request, 'pages/accounts/create_update_post.html', context)
+    return render(request, "pages/accounts/create_update_post.html", context)
 
 
 #################################
@@ -284,30 +284,30 @@ def delete_post_view(request, post_id):
     post = get_object_or_404(Post, id=post_id)
 
     if post.author.id != request.user.id:
-        messages.error(request, 'شما صاحب مقاله نیستید')
-        return redirect('accounts:profile')
-    
+        messages.error(request, "شما صاحب مقاله نیستید")
+        return redirect("accounts:profile")
+
     if request.method == "POST":
         post.delete()
-        messages.success(request, 'مقاله مورد نظر با موفقیت حذف شد')
-        return redirect('accounts:profile')
+        messages.success(request, "مقاله مورد نظر با موفقیت حذف شد")
+        return redirect("accounts:profile")
 
-    return render(request, 'pages/accounts/delete_post.html')
+    return render(request, "pages/accounts/delete_post.html")
 
 
 def send_active_email(request, user, to_email):
     # Email informations
     subject = "اکانت شما با موفقیت فعال شد"
     message = render_to_string(
-        template_name='pages/accounts/template_activate_account_email.html',
-        context= {
-            'user': user.first_name,
-            'domain': get_current_site(request).domain,
-            'user_id':urlsafe_base64_encode(force_bytes(user.pk)),
-            'token': account_activation_token.make_token(user),
-        }
+        template_name="pages/accounts/template_activate_account_email.html",
+        context={
+            "user": user.first_name,
+            "domain": get_current_site(request).domain,
+            "user_id": urlsafe_base64_encode(force_bytes(user.pk)),
+            "token": account_activation_token.make_token(user),
+        },
     )
     email = EmailMessage(subject=subject, body=message, to=[to_email])
 
     if email.send():
-        messages.success(request,"کاربر گرامی لینگ فعال سازی به ایمیل شما ارسال شد")
+        messages.success(request, "کاربر گرامی لینگ فعال سازی به ایمیل شما ارسال شد")
