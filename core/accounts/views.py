@@ -35,7 +35,7 @@ from blog.models import Post
 def login_view(request):
     # If the user was logged in and we clicked on login again, don't display the login
     if request.user.is_authenticated:
-        return redirect("accounts:profile")
+        return redirect("accounts:home_panel")
 
     if request.method == "POST":
         form = LoginForm(request.POST)
@@ -46,7 +46,7 @@ def login_view(request):
             print(user)
             if user is not None and user.is_active:
                 login(request, user)
-                return redirect("accounts:profile")
+                return redirect("accounts:home_panel")
             else:
                 messages.error(request, "نام کاربری یا رمز عبور اشتباه است")
 
@@ -242,7 +242,7 @@ def create_post_view(request):
             post.author = request.user
             form.save()
             messages.success(request, "مقاله شما با موفقیت ثبت گردید")
-            return redirect("accounts:profile")
+            return redirect("accounts:home_panel")
 
     else:
         form = CreatePostForm()
@@ -261,14 +261,14 @@ def edit_post_view(request, post_id):
 
     if post.author.id != request.user.id:
         messages.error(request, "شما صاحب مقاله نیستید")
-        return redirect("accounts:profile")
+        return redirect("accounts:home_panel")
 
     if request.method == "POST":
         form = CreatePostForm(request.POST, instance=post)
         if form.is_valid():
             form.save()
             messages.success(request, "مقاله شما با موفقیت بروزرسانی شد")
-            return redirect("accounts:profile")
+            return redirect("accounts:home_panel")
     else:
         form = CreatePostForm(instance=post)
     context = {"form": form}
@@ -285,12 +285,12 @@ def delete_post_view(request, post_id):
 
     if post.author.id != request.user.id:
         messages.error(request, "شما صاحب مقاله نیستید")
-        return redirect("accounts:profile")
+        return redirect("accounts:home_panel")
 
     if request.method == "POST":
         post.delete()
         messages.success(request, "مقاله مورد نظر با موفقیت حذف شد")
-        return redirect("accounts:profile")
+        return redirect("accounts:home_panel")
 
     return render(request, "pages/accounts/delete_post.html")
 

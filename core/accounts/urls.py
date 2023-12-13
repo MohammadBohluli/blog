@@ -4,6 +4,7 @@ from . import views
 
 app_name = "accounts"
 urlpatterns = [
+    path("", views.ProfileView.as_view(), name="home_panel"),
     path("", views.ProfileView.as_view(), name="profile"),
     # CRUD Posts
     path("create_post", views.create_post_view, name="create_post"),
