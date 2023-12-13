@@ -1,0 +1,28 @@
+{% extends './base_panel.html' %}
+
+
+{% block title %} پروفایل {% endblock title %}
+
+{% block main %}
+
+<!-- show Message --------------------------------------------->
+{% include 'partials/_messages.html' %}
+
+<section class="content">
+    <div class="container-fluid">
+        <a href="{% url 'accounts:create_post' %}">ایجاد مقاله</a>
+        {% for post in post_list %}
+        <div class="row">
+            <div class="p-3 mb-2 bg-secondary text-white text-body">
+                <p><a class="text-white" href="{{ post.get_absolute_url }}">{{post.title}}</a></p>
+                <a href="{% url 'accounts:delete_post' post.id %}">حذف</a>
+                <a href="{% url 'accounts:edit_post' post.id %}">ویرایش</a>
+            </div>
+        </div>
+        {% empty %}
+        <h3>در حال حاضر شما مقاله ای منتشر نکرده اید</h3>
+        {% endfor %}
+
+    </div>
+</section>
+{% endblock main %}

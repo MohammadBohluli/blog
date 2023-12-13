@@ -220,7 +220,7 @@ class ProfileView(LoginRequiredMixin, ListView):
     """
 
     model = Post
-    template_name = "pages/accounts/profile.html"
+    template_name = "pages/accounts/post_list_panel.html"
     context_object_name = "post_list"
 
     def get_queryset(self) -> QuerySet[Any]:
