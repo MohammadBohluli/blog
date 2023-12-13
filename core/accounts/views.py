@@ -28,6 +28,7 @@ from django.template.loader import render_to_string
 from django.core.mail import EmailMessage
 from .tokens import account_activation_token
 from blog.models import Post
+from .mixins import AccessOwnUserProfileMixin
 
 
 #################################
@@ -234,7 +235,7 @@ class PostList(LoginRequiredMixin, ListView):
 #################################
 ##### Profile Page
 #################################
-class ProfileView(LoginRequiredMixin, UpdateView):
+class ProfileView(LoginRequiredMixin, AccessOwnUserProfileMixin, UpdateView):
     model = get_user_model()
     template_name = "pages/accounts/profile.html"
     pk_url_kwarg = "user_id"
