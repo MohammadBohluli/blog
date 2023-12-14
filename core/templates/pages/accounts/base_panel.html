@@ -51,6 +51,9 @@
                 <li class="nav-item d-none d-sm-inline-block">
                     <a href="{% url 'blog:post_list' %}" class="nav-link">وبلاگ</a>
                 </li>
+                <li class="nav-item d-none d-sm-inline-block">
+                    <a href="{% url 'accounts:logout' %}" class="nav-link">خروج</a>
+                </li>
             </ul>
 
             <!-- SEARCH FORM -->
@@ -192,45 +195,22 @@
                 <nav class="mt-2">
                     <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu"
                         data-accordion="false">
-                        <!-- Add icons to the links using the .nav-icon class
-               with font-awesome or any other icon font library -->
-                        <li class="nav-item has-treeview menu-open">
-                            <a href="#" class="nav-link active">
-                                <i class="nav-icon fas fa-tachometer-alt"></i>
-                                <p>
-                                    مقالات
-                                    <i class="right fas fa-angle-left"></i>
-                                </p>
-                            </a>
-                            <ul class="nav nav-treeview">
-                                <li class="nav-item">
-                                    <a href="./index.html" class="nav-link active">
-                                        <i class="far fa-circle nav-icon"></i>
-                                        <p>لیست مقاله ها</p>
-                                    </a>
-                                </li>
-                                <li class="nav-item">
-                                    <a href="./index2.html" class="nav-link">
-                                        <i class="far fa-circle nav-icon"></i>
-                                        <p>افزودن مقاله</p>
-                                    </a>
-                                </li>
-                            </ul>
-                        </li>
                         <li class="nav-item">
-                            <a href="pages/widgets.html" class="nav-link">
+                            <a href="{% url 'accounts:home_panel' %}" class="nav-link">
                                 <i class="nav-icon fas fa-th"></i>
-                                <p>
-                                    پروفایل
-                                    <span class="right badge badge-danger">جدید</span>
-                                </p>
+                                <p>لیست مقالات</p>
                             </a>
                         </li>
-
                         <li class="nav-item">
-                            <a href="pages/widgets.html" class="nav-link">
+                            <a href="{% url 'accounts:create_post' %}" class="nav-link">
                                 <i class="nav-icon fas fa-th"></i>
-                                <p>کاربران</p>
+                                <p>افزدون مقاله</p>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="{{user.get_absolute_url}}" class="nav-link">
+                                <i class="nav-icon fas fa-th"></i>
+                                <p> پروفایل</p>
                             </a>
                         </li>
                     </ul>

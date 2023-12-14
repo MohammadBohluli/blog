@@ -11,3 +11,22 @@ class AccessOwnUserProfileMixin:
         if user.id != request.user.id:
             return PermissionDenied
         return super().dispatch(request, *args, **kwargs)
+
+
+class LimitAccessUserProfileFieldMixin:
+    """This mixin limited access to special fields"""
+
+    def dispatch(self, request, *args, **kwargs):
+        self.fields = [
+            "first_name",
+            "last_name",
+            "email",
+            "last_login",
+        ]
+        if self.request.user.is_superuser:
+            self.fields += [
+                "is_active",
+                "is_superuser",
+                "is_staff",
+            ]
+        return super().dispatch(request, *args, **kwargs)

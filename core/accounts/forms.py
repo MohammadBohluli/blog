@@ -46,17 +46,3 @@ class CreatePostForm(forms.ModelForm):
     class Meta:
         model = Post
         exclude = ["author", "slug", "published_at"]
-
-
-class ProfileUserForm(forms.ModelForm):
-    class Meta:
-        model = get_user_model()
-        fields = [
-            "first_name",
-            "last_name",
-            "email",
-            "is_staff",
-            "is_active",
-            "is_superuser",
-            "last_login",
-        ]

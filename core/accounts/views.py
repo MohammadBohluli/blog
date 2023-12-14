@@ -1,5 +1,6 @@
-from typing import Any
 from django.db.models.query import QuerySet
+from typing import Any
+
 from .forms import (
     CustomUserCreationForm,
     CustomPasswordChangeForm,
@@ -7,7 +8,6 @@ from .forms import (
     CustomSetPasswordForm,
     LoginForm,
     CreatePostForm,
-    ProfileUserForm,
 )
 from django.contrib.auth import (
     authenticate,
@@ -16,11 +16,12 @@ from django.contrib.auth import (
     get_user_model,
     update_session_auth_hash,
 )
-from django.views.generic import ListView, UpdateView, FormView
+from django.views.generic import ListView, UpdateView
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.sites.shortcuts import get_current_site
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
+from django.contrib.messages.views import SuccessMessageMixin
 from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
 from django.utils.encoding import force_bytes, force_str
 from django.shortcuts import render, redirect, get_object_or_404
@@ -28,7 +29,7 @@ from django.template.loader import render_to_string
 from django.core.mail import EmailMessage
 from .tokens import account_activation_token
 from blog.models import Post
-from .mixins import AccessOwnUserProfileMixin
+from .mixins import AccessOwnUserProfileMixin, LimitAccessUserProfileFieldMixin
 
 
 #################################
@@ -235,11 +236,26 @@ class PostList(LoginRequiredMixin, ListView):
 #################################
 ##### Profile Page
 #################################
-class ProfileView(LoginRequiredMixin, AccessOwnUserProfileMixin, UpdateView):
+class ProfileView(
+    LoginRequiredMixin,
+    AccessOwnUserProfileMixin,
+    LimitAccessUserProfileFieldMixin,
+    SuccessMessageMixin,
+    UpdateView,
+):
+    """This view for edit profile user"""
+
     model = get_user_model()
     template_name = "pages/accounts/profile.html"
     pk_url_kwarg = "user_id"
-    form_class = ProfileUserForm
+    success_message = "پروفایل شما با موفقیت بروز رسانی شد"
+
+    def get_form(self, form_class=None):
+        if form_class is None:
+            form_class = self.get_form_class()
+        form = super().get_form(form_class)
+        form.fields["last_login"].disabled = True
+        return form
 
 
 #################################
