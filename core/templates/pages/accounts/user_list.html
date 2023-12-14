@@ -4,7 +4,7 @@
     {% for user in user_list %}
         <div class="row">
             <p>{{user.email}}</p>
-            <p><a href="{{ user.get_absolute_url }}">{{user.firs_name}} {{user.last_name}}</a></p>
+            <p><a href="{{ user.get_absolute_url }}">{{user.first_name}} {{user.last_name}}</a></p>
         </div>
         <hr>
     {% endfor %}
