@@ -213,6 +213,14 @@
                                 <p> پروفایل</p>
                             </a>
                         </li>
+                        {% if user.is_superuser %}
+                        <li class="nav-item">
+                            <a href="{% url 'accounts:users' %}" class="nav-link">
+                                <i class="nav-icon fas fa-th"></i>
+                                <p> کاربران</p>
+                            </a>
+                        </li>
+                        {% endif %}
                     </ul>
                 </nav>
                 <!-- /.sidebar-menu -->

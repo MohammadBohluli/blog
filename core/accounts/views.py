@@ -12,7 +12,6 @@ from .forms import (
 from django.contrib.auth import (
     authenticate,
     login,
-    logout,
     get_user_model,
     update_session_auth_hash,
 )
@@ -69,6 +68,16 @@ class CustomLogoutView(LogoutView):
     """This view for logout user"""
 
     template_name = "pages/accounts/logout.html"
+
+
+#################################
+##### User List Page
+#################################
+class UserListView(LoginRequiredMixin, ListView):
+    model = get_user_model()
+    template_name = "pages/accounts/user_list.html"
+    queryset = get_user_model().objects.all()
+    context_object_name = "user_list"
 
 
 #################################

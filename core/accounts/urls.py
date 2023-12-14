@@ -6,6 +6,7 @@ app_name = "accounts"
 urlpatterns = [
     path("", views.PostList.as_view(), name="home_panel"),
     path("profile/<int:user_id>", views.ProfileView.as_view(), name="profile"),
+    path("users/", views.UserListView.as_view(), name="users"),
     # CRUD Posts
     path("create_post", views.create_post_view, name="create_post"),
     path("edit_post/<int:post_id>", views.edit_post_view, name="edit_post"),

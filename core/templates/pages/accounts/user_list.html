@@ -1,0 +1,10 @@
+{% extends './base_panel.html' %}
+{% block main %}
+
+    {% for user in user_list %}
+        <div class="row">
+            {{user.email}}
+        </div>
+    {% endfor %}
+
+{% endblock main %}
