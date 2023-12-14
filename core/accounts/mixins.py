@@ -4,13 +4,21 @@ from .models import CustomUser
 
 
 class AccessOwnUserProfileMixin:
-    """This mixin forces the user to change only own profile(not other profile)"""
+    """
+    This mixin forces the user to edit only own profile(not other profile)
+    but superuser can edit all profile
+    """
 
     def dispatch(self, request, user_id, *args, **kwargs):
         user = get_object_or_404(CustomUser, id=user_id)
+
+        if self.request.user.is_superuser:
+            return super().dispatch(request, *args, **kwargs)
+
         if user.id != request.user.id:
             raise PermissionDenied
-        return super().dispatch(request, *args, **kwargs)
+        else:
+            return super().dispatch(request, *args, **kwargs)
 
 
 class LimitAccessUserProfileFieldMixin:
