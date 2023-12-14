@@ -9,7 +9,7 @@ class AccessOwnUserProfileMixin:
     def dispatch(self, request, user_id, *args, **kwargs):
         user = get_object_or_404(CustomUser, id=user_id)
         if user.id != request.user.id:
-            return PermissionDenied
+            raise PermissionDenied
         return super().dispatch(request, *args, **kwargs)
 
 
@@ -30,3 +30,11 @@ class LimitAccessUserProfileFieldMixin:
                 "is_staff",
             ]
         return super().dispatch(request, *args, **kwargs)
+
+
+class AccessSuperUserOnly:
+    def dispatch(self, request, *args, **kwargs):
+        if self.request.user.is_superuser:
+            return super().dispatch(request, *args, **kwargs)
+        else:
+            raise PermissionDenied

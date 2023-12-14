@@ -29,7 +29,11 @@ from django.template.loader import render_to_string
 from django.core.mail import EmailMessage
 from .tokens import account_activation_token
 from blog.models import Post
-from .mixins import AccessOwnUserProfileMixin, LimitAccessUserProfileFieldMixin
+from .mixins import (
+    AccessOwnUserProfileMixin,
+    LimitAccessUserProfileFieldMixin,
+    AccessSuperUserOnly,
+)
 
 
 #################################
@@ -73,7 +77,7 @@ class CustomLogoutView(LogoutView):
 #################################
 ##### User List Page
 #################################
-class UserListView(LoginRequiredMixin, ListView):
+class UserListView(LoginRequiredMixin, AccessSuperUserOnly, ListView):
     model = get_user_model()
     template_name = "pages/accounts/user_list.html"
     queryset = get_user_model().objects.all()
