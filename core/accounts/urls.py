@@ -12,7 +12,7 @@ urlpatterns = [
     path("delete_post/<int:post_id>", views.delete_post_view, name="delete_post"),
     # Authentications
     path("login/", views.login_view, name="login"),
-    path("logout/", views.logout_view, name="logout"),
+    path("logout/", views.CustomLogoutView.as_view(), name="logout"),
     path("signup/", views.signup_view, name="signup"),
     path("activate/<uidb64>/<token>/", views.activate_user_view, name="activate"),
     path("password_change/", views.password_change_view, name="password_change"),

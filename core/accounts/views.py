@@ -18,6 +18,7 @@ from django.contrib.auth import (
 )
 from django.views.generic import ListView, UpdateView
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib.auth.views import LogoutView
 from django.contrib.sites.shortcuts import get_current_site
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
@@ -64,10 +65,10 @@ def login_view(request):
 #################################
 ##### Logout Page
 #################################
-def logout_view(request):
-    logout(request)
-    messages.success(request, "شما با موفقیت از اکانت خود خارج شدید")
-    return redirect("accounts:login")
+class CustomLogoutView(LogoutView):
+    """This view for logout user"""
+
+    template_name = "pages/accounts/logout.html"
 
 
 #################################
