@@ -15,7 +15,7 @@ from django.contrib.auth import (
     get_user_model,
     update_session_auth_hash,
 )
-from django.views.generic import ListView, UpdateView
+from django.views.generic import ListView, UpdateView, CreateView
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.views import LogoutView
 from django.contrib.sites.shortcuts import get_current_site
@@ -109,25 +109,23 @@ def activate_user_view(request, uidb64, token):
 
 
 #################################
-##### SignUp Page(with email confirmations)
+##### SignUp Page
 #################################
-def signup_view(request):
-    if request.method == "POST":
-        form = CustomUserCreationForm(request.POST)
+class SignUpView(CreateView):
+    """This view for register with confirm mail"""
 
-        if form.is_valid():
-            user = form.save(commit=False)
-            user.is_active = False
-            user.save()
+    template_name = "pages/accounts/signup.html"
+    form_class = CustomUserCreationForm
 
-            email = form.cleaned_data.get("email")
-            send_active_email(request, user, to_email=email)
-            return redirect("accounts:login")
-    else:
-        form = CustomUserCreationForm()
+    def form_valid(self, form):
+        user = form.save(commit=False)
+        user.is_active = False
+        user.save()
 
-    context = {"form": form}
-    return render(request, "pages/accounts/signup.html", context)
+        # send mail confirm
+        email = form.cleaned_data["email"]
+        send_active_email(self.request, user, to_email=email)
+        return redirect("accounts:login")
 
 
 #################################
@@ -339,11 +337,11 @@ def delete_post_view(request, post_id):
 
 def send_active_email(request, user, to_email):
     # Email informations
-    subject = "اکانت شما با موفقیت فعال شد"
+    subject = "فعال سازی اکانت"
     message = render_to_string(
         template_name="pages/accounts/template_activate_account_email.html",
         context={
-            "user": user.first_name,
+            "user": f"{user.first_name} {user.last_name}",
             "domain": get_current_site(request).domain,
             "user_id": urlsafe_base64_encode(force_bytes(user.pk)),
             "token": account_activation_token.make_token(user),
