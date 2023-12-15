@@ -1,9 +1,6 @@
 from django.db.models.query import QuerySet
 from typing import Any
 
-from django.forms.models import BaseModelForm
-from django.http import HttpResponse
-
 from .forms import (
     CustomUserCreationForm,
     CustomPasswordChangeForm,
@@ -39,6 +36,7 @@ from .mixins import (
     AccessSuperUserOnly,
     AccessOwnPostMixin,
 )
+from django.urls import reverse_lazy
 
 
 #################################
@@ -313,6 +311,7 @@ class UpdatePostView(
     form_class = CreatePostForm
     pk_url_kwarg = "post_id"
     success_message = "مقاله شما با موفقیت بروزرسانی شد"
+    success_url = reverse_lazy("accounts:home_panel")
 
 
 # @login_required
