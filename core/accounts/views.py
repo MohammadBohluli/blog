@@ -304,25 +304,33 @@ class CreatePostView(LoginRequiredMixin, CreateView):
 #################################
 ##### Edit Post Page
 #################################
-@login_required
-def edit_post_view(request, post_id):
-    post = get_object_or_404(Post, id=post_id)
+class UpdatePostView(LoginRequiredMixin, SuccessMessageMixin, UpdateView):
+    model = Post
+    template_name = "pages/accounts/create_update_post.html"
+    form_class = CreatePostForm
+    pk_url_kwarg = "post_id"
+    success_message = "مقاله شما با موفقیت بروزرسانی شد"
 
-    if post.author.id != request.user.id:
-        messages.error(request, "شما صاحب مقاله نیستید")
-        return redirect("accounts:home_panel")
 
-    if request.method == "POST":
-        form = CreatePostForm(request.POST, instance=post)
-        if form.is_valid():
-            form.save()
-            messages.success(request, "مقاله شما با موفقیت بروزرسانی شد")
-            return redirect("accounts:home_panel")
-    else:
-        form = CreatePostForm(instance=post)
-    context = {"form": form}
+# @login_required
+# def edit_post_view(request, post_id):
+#     post = get_object_or_404(Post, id=post_id)
 
-    return render(request, "pages/accounts/create_update_post.html", context)
+#     if post.author.id != request.user.id:
+#         messages.error(request, "شما صاحب مقاله نیستید")
+#         return redirect("accounts:home_panel")
+
+#     if request.method == "POST":
+#         form = CreatePostForm(request.POST, instance=post)
+#         if form.is_valid():
+#             form.save()
+#             messages.success(request, "مقاله شما با موفقیت بروزرسانی شد")
+#             return redirect("accounts:home_panel")
+#     else:
+#         form = CreatePostForm(instance=post)
+#     context = {"form": form}
+
+#     return render(request, "pages/accounts/create_update_post.html", context)
 
 
 #################################
