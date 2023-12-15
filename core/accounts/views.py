@@ -15,7 +15,7 @@ from django.contrib.auth import (
     get_user_model,
     update_session_auth_hash,
 )
-from django.views.generic import ListView, UpdateView, CreateView
+from django.views.generic import ListView, UpdateView, CreateView, DeleteView
 from django.views import View
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.views import LogoutView
@@ -317,20 +317,14 @@ class UpdatePostView(
 #################################
 ##### Delete Post Page
 #################################
-@login_required
-def delete_post_view(request, post_id):
-    post = get_object_or_404(Post, id=post_id)
-
-    if post.author.id != request.user.id:
-        messages.error(request, "شما صاحب مقاله نیستید")
-        return redirect("accounts:home_panel")
-
-    if request.method == "POST":
-        post.delete()
-        messages.success(request, "مقاله مورد نظر با موفقیت حذف شد")
-        return redirect("accounts:home_panel")
-
-    return render(request, "pages/accounts/delete_post.html")
+class DeletePostView(
+    LoginRequiredMixin, SuccessMessageMixin, AccessOwnPostMixin, DeleteView
+):
+    model = Post
+    template_name = "pages/accounts/delete_post.html"
+    pk_url_kwarg = "post_id"
+    success_message = "مقاله مورد نظر با موفقیت حذف شد"
+    success_url = reverse_lazy("accounts:home_panel")
 
 
 def send_active_email(request, user, to_email):
