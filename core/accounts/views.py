@@ -16,6 +16,7 @@ from django.contrib.auth import (
     update_session_auth_hash,
 )
 from django.views.generic import ListView, UpdateView, CreateView
+from django.views import View
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.views import LogoutView
 from django.contrib.sites.shortcuts import get_current_site
@@ -87,25 +88,37 @@ class UserListView(LoginRequiredMixin, AccessSuperUserOnly, ListView):
 #################################
 ##### Activate User Page
 #################################
-def activate_user_view(request, uidb64, token):
-    User = get_user_model()
-    try:
-        user_id = force_str(urlsafe_base64_decode(uidb64))
-        user = User.objects.get(pk=user_id)
-    except:
-        user = None
+class ActiveUserView(View):
+    """view for activation user based on token"""
 
-    if user is not None and account_activation_token.check_token(user, token):
-        user.is_active = True
-        user.save()
+    def get(self, request, uidb64, token):
+        user = self.get_user(uidb64)
 
-        messages.success(
-            request, "ایمیل شما فعال شد . اکنون میتوانید وارد پنل خود شوید"
-        )
-        return redirect("accounts:login")
-    else:
-        messages.error(request, "لینک مورد نظر معتبر نیست")
-    return redirect("accounts:login")
+        if user and self.activate_user(user, token):
+            messages.success(
+                request, "ایمیل شما فعال شد . اکنون میتوانید وارد پنل خود شوید"
+            )
+            return redirect("accounts:login")
+        else:
+            messages.error(request, "لینک مورد نظر معتبر نیست")
+            return redirect("accounts:login")
+
+    # check user is exist
+    def get_user(self, uidb64):
+        User = get_user_model()
+        try:
+            user_id = force_str(urlsafe_base64_decode(uidb64))
+            return User.objects.get(pk=user_id)
+        except User.DoesNotExist:
+            return None
+
+    def activate_user(self, user, token):
+        if account_activation_token.check_token(user, token):
+            user.is_active = True
+            user.save()
+            return True
+        else:
+            return False
 
 
 #################################
