@@ -1,6 +1,8 @@
 from django.core.exceptions import PermissionDenied
-from django.shortcuts import get_object_or_404
+from django.shortcuts import get_object_or_404, redirect
+from django.contrib import messages
 from .models import CustomUser
+from blog.models import Post
 
 
 class AccessOwnUserProfileMixin:
@@ -19,6 +21,22 @@ class AccessOwnUserProfileMixin:
             raise PermissionDenied
         else:
             return super().dispatch(request, *args, **kwargs)
+
+
+class AccessOwnPostMixin:
+    """This mixin limited access users to own post"""
+
+    def dispatch(self, request, post_id, *args, **kwargs):
+        post = get_object_or_404(Post, id=post_id)
+
+        if self.request.user.is_superuser:
+            return super().dispatch(request, *args, **kwargs)
+
+        if post.author.id != self.request.user.id:
+            messages.error(request, "شما صاحب مقاله نیستید")
+            return redirect("accounts:home_panel")
+
+        return super().dispatch(request, *args, **kwargs)
 
 
 class LimitAccessUserProfileFieldMixin:

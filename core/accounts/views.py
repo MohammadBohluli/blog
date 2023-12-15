@@ -37,6 +37,7 @@ from .mixins import (
     AccessOwnUserProfileMixin,
     LimitAccessUserProfileFieldMixin,
     AccessSuperUserOnly,
+    AccessOwnPostMixin,
 )
 
 
@@ -304,7 +305,9 @@ class CreatePostView(LoginRequiredMixin, CreateView):
 #################################
 ##### Edit Post Page
 #################################
-class UpdatePostView(LoginRequiredMixin, SuccessMessageMixin, UpdateView):
+class UpdatePostView(
+    LoginRequiredMixin, AccessOwnPostMixin, SuccessMessageMixin, UpdateView
+):
     model = Post
     template_name = "pages/accounts/create_update_post.html"
     form_class = CreatePostForm
