@@ -314,29 +314,8 @@ class UpdatePostView(
     success_url = reverse_lazy("accounts:home_panel")
 
 
-# @login_required
-# def edit_post_view(request, post_id):
-#     post = get_object_or_404(Post, id=post_id)
-
-#     if post.author.id != request.user.id:
-#         messages.error(request, "شما صاحب مقاله نیستید")
-#         return redirect("accounts:home_panel")
-
-#     if request.method == "POST":
-#         form = CreatePostForm(request.POST, instance=post)
-#         if form.is_valid():
-#             form.save()
-#             messages.success(request, "مقاله شما با موفقیت بروزرسانی شد")
-#             return redirect("accounts:home_panel")
-#     else:
-#         form = CreatePostForm(instance=post)
-#     context = {"form": form}
-
-#     return render(request, "pages/accounts/create_update_post.html", context)
-
-
 #################################
-##### ِDelete Post Page
+##### Delete Post Page
 #################################
 @login_required
 def delete_post_view(request, post_id):
