@@ -5,7 +5,7 @@
 <p>آیا از حذف این مقاله مطمعن هستید ؟</p>
 <form method="post">
     {% csrf_token %}
-    <button type="submit"><a href="{% url 'accounts:profile' %}">خیر</a></button>
+    <a href="{% url 'accounts:home_panel' %}">خیر</a>
     <button type="submit">بله</button>
 </form>
 {% endblock %}
