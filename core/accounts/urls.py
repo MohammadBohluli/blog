@@ -8,7 +8,7 @@ urlpatterns = [
     path("profile/<int:user_id>", views.ProfileView.as_view(), name="profile"),
     path("users/", views.UserListView.as_view(), name="users"),
     # CRUD Posts
-    path("create_post", views.create_post_view, name="create_post"),
+    path("create_post", views.CreatePostView.as_view(), name="create_post"),
     path("edit_post/<int:post_id>", views.edit_post_view, name="edit_post"),
     path("delete_post/<int:post_id>", views.delete_post_view, name="delete_post"),
     # Authentications

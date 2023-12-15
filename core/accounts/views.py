@@ -1,6 +1,9 @@
 from django.db.models.query import QuerySet
 from typing import Any
 
+from django.forms.models import BaseModelForm
+from django.http import HttpResponse
+
 from .forms import (
     CustomUserCreationForm,
     CustomPasswordChangeForm,
@@ -286,23 +289,16 @@ class ProfileView(
 #################################
 ##### Create Post Page
 #################################
-@login_required
-def create_post_view(request):
-    if request.method == "POST":
-        form = CreatePostForm(request.POST)
-        if form.is_valid():
-            post = form.save(commit=False)
-            post.author = request.user
-            form.save()
-            messages.success(request, "مقاله شما با موفقیت ثبت گردید")
-            return redirect("accounts:home_panel")
+class CreatePostView(LoginRequiredMixin, CreateView):
+    template_name = "pages/accounts/create_update_post.html"
+    form_class = CreatePostForm
 
-    else:
-        form = CreatePostForm()
-
-    context = {"form": form}
-
-    return render(request, "pages/accounts/create_update_post.html", context)
+    def form_valid(self, form):
+        post = form.save(commit=False)
+        post.author = self.request.user
+        post.save()
+        messages.success(self.request, "مقاله شما با موفقیت ثبت گردید")
+        return redirect("accounts:home_panel")
 
 
 #################################
